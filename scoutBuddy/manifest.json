@@ -6,7 +6,8 @@
   "description": "Provides Scouting Data and Help for the FIRST Robotics Competition",
 
   "icons": {
-    "48": "scoutingBuddyLogo.png"
+    "48": "scoutingBuddyLogo.png",
+    "96": "scoutingBuddyLogo.png"
   },
 
   "browser_specific_settings": {
@@ -18,10 +19,27 @@
     }
   },
 
+  "action": {
+    "default_icon": "scoutingBuddyLogo.png",
+    "default_title": "ScoutBuddy",
+    "theme_icons": [
+    {
+      "light": "scoutingBuddyLogo.png",
+      "dark": "scoutingBuddyLogo.png",
+      "size": 48
+    }
+    ]
+  },
   "content_scripts": [
     {
       "matches": ["*://*.mozilla.org/*"],
       "js": ["scoutbuddy.js"]
+    }
+  ],
+   "web_accessible_resources": [
+    {
+      "resources": ["robot/*.jpg"],
+      "matches": ["*://*/*"]
     }
   ]
 }
