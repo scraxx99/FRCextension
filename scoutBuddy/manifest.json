@@ -1,0 +1,27 @@
+{
+  "manifest_version": 3,
+  "name": "ScoutBuddy",
+  "version": "1.0",
+
+  "description": "Provides Scouting Data and Help for the FIRST Robotics Competition",
+
+  "icons": {
+    "48": "scoutingBuddyLogo.png"
+  },
+
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "scoutbuddy@mozilla.org",
+      "data_collection_permissions": {
+        "required": ["none"]
+      }
+    }
+  },
+
+  "content_scripts": [
+    {
+      "matches": ["*://*.mozilla.org/*"],
+      "js": ["scoutbuddy.js"]
+    }
+  ]
+}
