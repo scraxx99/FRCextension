@@ -1,0 +1,25 @@
+html,
+body {
+    width: 400px;
+    min-height: 300px;
+    padding: 10px;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+button {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+#status {
+    margin-top: 10px;
+}
+
+#resultImage {
+    margin-top: 10px;
+    width: 100%;
+    display: none;
+}

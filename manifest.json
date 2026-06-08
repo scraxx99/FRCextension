@@ -12,7 +12,6 @@
 
   "browser_specific_settings": {
     "gecko": {
-      "id": "scoutbuddy@mozilla.org",
       "data_collection_permissions": {
         "required": ["none"]
       }
@@ -20,23 +19,17 @@
   },
 
   "action": {
-    "default_icon": "scoutingBuddyLogo.png",
     "default_title": "ScoutBuddy",
-    "theme_icons": [
-    {
-      "light": "scoutingBuddyLogo.png",
-      "dark": "scoutingBuddyLogo.png",
-      "size": 48
-    }
-    ]
+    "default_icon": "scoutingBuddyLogo.png",
+    "default_popup": "scoutinfo.html"
   },
-  "content_scripts": [
-    {
-      "matches": ["*://*.mozilla.org/*"],
-      "js": ["scoutbuddy.js"]
-    }
+
+  "host_permissions": [
+    "https://www.thebluealliance.com/*",
+    "https://i.imgur.com/*"
   ],
-   "web_accessible_resources": [
+
+  "web_accessible_resources": [
     {
       "resources": ["robot/*.jpg"],
       "matches": ["*://*/*"]
