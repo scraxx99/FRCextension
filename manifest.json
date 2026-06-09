@@ -6,8 +6,8 @@
   "description": "Provides Scouting Data and Help for the FIRST Robotics Competition",
 
   "icons": {
-    "48": "scoutingBuddyLogo.png",
-    "96": "scoutingBuddyLogo.png"
+    "48": "image/scoutingBuddyLogo.png",
+    "96": "image/scoutingBuddyLogo.png"
   },
 
   "browser_specific_settings": {
@@ -20,7 +20,7 @@
 
   "action": {
     "default_title": "ScoutBuddy",
-    "default_icon": "images/scoutingBuddyLogo.png",
+    "default_icon": "image/scoutingBuddyLogo.png",
     "default_popup": "scoutinfo.html"
   },
 
