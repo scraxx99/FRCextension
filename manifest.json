@@ -20,7 +20,7 @@
 
   "action": {
     "default_title": "ScoutBuddy",
-    "default_icon": "scoutingBuddyLogo.png",
+    "default_icon": "images/scoutingBuddyLogo.png",
     "default_popup": "scoutinfo.html"
   },
 

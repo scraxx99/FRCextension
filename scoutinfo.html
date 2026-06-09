@@ -1,23 +1,32 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>ScoutBuddy</title>
     <link rel="stylesheet" href="scoutinfo.css">
 </head>
+
 <body>
 
-    <h2>ScoutBuddy</h2>
+    <h1>ScoutBuddy</h1>
+
+    <h2>Team Search</h2>
+
+    <input
+        id="teamNumberInput"
+        type="number"
+        placeholder="Enter Team Number"
+    >
 
     <button id="searchTeamBtn">
-        Show Random Team 4188 Photo
+        Search Team
     </button>
 
     <p id="status">Ready</p>
 
-    <img id="resultImage" alt="Team Photo">
+    <div id="results"></div>
 
-    <script src="scoutinfo.js"></script>
+    <script type="module" src="./js/scoutinfo.js"></script>
 
 </body>
 </html>
