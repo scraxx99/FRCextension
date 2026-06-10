@@ -3,30 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <title>ScoutBuddy</title>
-    <link rel="stylesheet" href="scoutinfo.css">
+    <link rel="stylesheet" href="scoutInfo.css">
 </head>
 
 <body>
 
-    <h1>ScoutBuddy</h1>
+    <div class="container">
 
-    <h2>Team Search</h2>
+    <div class="left-panel">
+        <h2>Team Search</h2>
 
-    <input
-        id="teamNumberInput"
-        type="number"
-        placeholder="Enter Team Number"
-    >
+        <input
+            id="teamNumberInput"
+            type="number"
+            placeholder="Enter Team Number"
+        >
 
-    <button id="searchTeamBtn">
-        Search Team
-    </button>
+        <button id="searchTeamBtn">
+            Search Team
+        </button>
 
-    <p id="status">Ready</p>
+        <p id="status">Ready</p>
 
-    <div id="results"></div>
+        <div id="results"></div>
+    </div>
 
-    <script type="module" src="./js/scoutinfo.js"></script>
+   <div class="right-panel">
 
+    <h2>Events</h2>
+
+<select id="eventDropdown">
+    <option value="">
+        Search a team first...
+    </option>
+</select>
+<div id="matchResults"></div>
+
+</div>
+
+</div>
+<script type="module" src="js/scoutinfo.js"></script>
 </body>
+
 </html>

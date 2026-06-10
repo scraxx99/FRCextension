@@ -25,9 +25,11 @@
   },
 
   "host_permissions": [
-    "https://www.thebluealliance.com/*",
-    "https://i.imgur.com/*"
-  ],
+  "https://www.thebluealliance.com/*",
+  "https://img.youtube.com/*",
+  "https://www.youtube.com/*",
+  "https://i.imgur.com/*"
+],
 
   "web_accessible_resources": [
     {

@@ -71,3 +71,56 @@ export async function getTeamMedia(teamInput, year) {
         `/team/${teamKey}/media/${year}`
     );
 }
+
+export async function getEventInfo(eventKey) {
+
+    const response = await fetch(
+        `https://www.thebluealliance.com/api/v3/event/${eventKey}`,
+        {
+            headers: {
+                "X-TBA-Auth-Key": AUTH_CODE
+            }
+        }
+    );
+
+    if (!response.ok) {
+        throw new Error("Event not found");
+    }
+
+    return await response.json();
+}
+
+export async function getTeamEvents(teamNumber, year) {
+
+    const response = await fetch(
+        `https://www.thebluealliance.com/api/v3/team/frc${teamNumber}/events/${year}`,
+        {
+            headers: {
+                "X-TBA-Auth-Key": AUTH_CODE
+            }
+        }
+    );
+
+    if (!response.ok) {
+        throw new Error("Could not load events");
+    }
+
+    return await response.json();
+}
+export async function getTeamMatches(teamNumber, eventKey) {
+
+    const response = await fetch(
+        `https://www.thebluealliance.com/api/v3/team/frc${teamNumber}/event/${eventKey}/matches`,
+        {
+            headers: {
+                "X-TBA-Auth-Key": AUTH_CODE
+            }
+        }
+    );
+
+    if (!response.ok) {
+        throw new Error("Could not load matches");
+    }
+
+    return await response.json();
+}
