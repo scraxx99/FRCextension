@@ -5,6 +5,8 @@ import {
     getTeamMatches
 } from "./tba.js";
 
+import { getTeamEPA } from "./statbotics.js";
+
 export function setupTeamSearch() {
 
     const button = document.getElementById("searchTeamBtn");
@@ -16,22 +18,19 @@ export function setupTeamSearch() {
 
     let currentTeamNumber = null;
 
-    // Allow Enter key to trigger search
+    // Enter key triggers search
     input.addEventListener("keydown", (event) => {
-
         if (event.key === "Enter") {
             button.click();
         }
-
     });
 
-    // Event selection handler
+    // Event matches
     eventDropdown.addEventListener("change", async () => {
 
         if (!currentTeamNumber) return;
 
         const eventKey = eventDropdown.value;
-
         if (!eventKey) return;
 
         matchResults.innerHTML = "<p>Loading matches...</p>";
@@ -44,267 +43,167 @@ export function setupTeamSearch() {
             );
 
             matches.sort((a, b) => {
-
                 if (a.comp_level !== b.comp_level) {
-                    return a.comp_level.localeCompare(
-                        b.comp_level
-                    );
+                    return a.comp_level.localeCompare(b.comp_level);
                 }
-
                 return a.match_number - b.match_number;
-
             });
 
             const lastFive = matches.slice(-5);
 
-            matchResults.innerHTML =
-                "<h3>Last 5 Matches</h3>";
+            matchResults.innerHTML = "<h3>Last 5 Matches</h3>";
 
             lastFive.forEach(match => {
 
-                const alliance =
-                    match.alliances.red.team_keys.includes(
-                        `frc${currentTeamNumber}`
-                    )
-                        ? "Red"
-                        : "Blue";
+                const teamKey = `frc${currentTeamNumber}`;
+
+                const onRed = match.alliances.red.team_keys.includes(teamKey);
+
                 const redScore = match.alliances.red.score;
                 const blueScore = match.alliances.blue.score;
 
-                const score =
-                alliance === "Red"
-                ? redScore
-                : blueScore;
+                const scoreText = `${redScore} - ${blueScore}`;
 
                 let result = "Tie";
 
                 if (
-                    (alliance === "Red" && redScore > blueScore) ||
-                    (alliance === "Blue" && blueScore > redScore)
-                ) {                 
-                result = "✅ Win";
-                } else if (
-                (alliance === "Red" && redScore < blueScore) ||
-                (alliance === "Blue" && blueScore < redScore)
+                    (onRed && redScore > blueScore) ||
+                    (!onRed && blueScore > redScore)
                 ) {
-                result = "❌ Loss";
+                    result = "✅ Win";
+                } else if (
+                    (onRed && redScore < blueScore) ||
+                    (!onRed && blueScore < redScore)
+                ) {
+                    result = "❌ Loss";
                 }
 
-                let videoHtml =
-                    "<p>No video available.</p>";
+                let videoHtml = "<p>No video available.</p>";
 
-                const youtubeVideo =
-                    match.videos?.find(
-                        video => video.type === "youtube"
-                    );
+                const youtubeVideo = match.videos?.find(
+                    v => v.type === "youtube"
+                );
 
                 if (youtubeVideo) {
-
                     videoHtml = `
-                        <a
-                            href="https://www.youtube.com/watch?v=${youtubeVideo.key}"
-                            target="_blank"
-                        >
+                        <a href="https://www.youtube.com/watch?v=${youtubeVideo.key}" target="_blank">
                             <img
                                 src="https://img.youtube.com/vi/${youtubeVideo.key}/mqdefault.jpg"
-                                alt="Match Video"
-                                style="
-                                    width:220px;
-                                    margin-top:8px;
-                                    border-radius:8px;
-                                    cursor:pointer;
-                                "
+                                style="width:220px;margin-top:8px;border-radius:8px;cursor:pointer;"
                             >
                         </a>
                     `;
                 }
 
                 matchResults.innerHTML += `
-                    <div style="
-                        margin-bottom:15px;
-                        padding:10px;
-                        border:1px solid #ccc;
-                        border-radius:8px;
-                    ">
-                        <strong>
-                            ${match.comp_level.toUpperCase()}
-                            ${match.match_number}
-                        </strong>
-
-                        <br>
-
-                        Alliance: ${alliance}
-
-                        <br>
-
-                        Score: 
-                        ${redScore} - ${blueScore}
-
-                        <br>
-
-                        Result: ${result}
-
-                        <br>
-
+                    <div style="margin-bottom:12px;padding:10px;border:1px solid #ccc;border-radius:8px;">
+                        <strong>${match.comp_level.toUpperCase()} ${match.match_number}</strong><br>
+                        Result: ${result}<br>
+                        Score: ${scoreText}<br>
                         ${videoHtml}
                     </div>
                 `;
             });
 
         } catch (err) {
-
             console.error(err);
-
-            matchResults.innerHTML =
-                "<p>Could not load matches.</p>";
+            matchResults.innerHTML = "<p>Could not load matches.</p>";
         }
-
     });
 
-    // Team search handler
+    // Main search
     button.addEventListener("click", async () => {
 
         const teamNumber = input.value.trim();
 
         if (!teamNumber) {
-
-            status.textContent =
-                "Enter a team number.";
-
+            status.textContent = "Enter a team number.";
             return;
         }
 
         currentTeamNumber = teamNumber;
-
         status.textContent = "Searching...";
 
         try {
 
-            const [team, robotPic, events] =
-                await Promise.all([
+            const [team, robotPic, events, epa] = await Promise.all([
+                getTeamInfo(teamNumber),
+                getTeamMedia(teamNumber, new Date().getFullYear()),
+                getTeamEvents(teamNumber, new Date().getFullYear()),
+                getTeamEPA(teamNumber)
+            ]);
 
-                    getTeamInfo(teamNumber),
+            console.log("Statbotics RAW:", epa);
 
-                    getTeamMedia(
-                        teamNumber,
-                        new Date().getFullYear()
-                    ),
-
-                    getTeamEvents(
-                        teamNumber,
-                        new Date().getFullYear()
-                    )
-
-                ]);
-
-            // Populate event dropdown
-
-            eventDropdown.innerHTML = `
-                <option value="">
-                    Select Event...
-                </option>
-            `;
+            // Events dropdown
+            eventDropdown.innerHTML = `<option value="">Select Event...</option>`;
 
             events.forEach(event => {
-
-                const option =
-                    document.createElement("option");
-
+                const option = document.createElement("option");
                 option.value = event.key;
                 option.textContent = event.name;
-
                 eventDropdown.appendChild(option);
-
             });
 
-            // Find robot image
+            // Robot image
+            const imageMedia = robotPic.filter(item =>
+                item.direct_url &&
+                (
+                    item.direct_url.endsWith(".jpg") ||
+                    item.direct_url.endsWith(".jpeg") ||
+                    item.direct_url.endsWith(".png")
+                )
+            );
 
-            const imageMedia =
-                robotPic.filter(item =>
-                    item.direct_url &&
-                    (
-                        item.direct_url.endsWith(".jpg") ||
-                        item.direct_url.endsWith(".jpeg") ||
-                        item.direct_url.endsWith(".png")
-                    )
-                );
+            const preferred = imageMedia.find(i => i.preferred);
 
-            let imageUrl = "";
+            const imageUrl = preferred
+                ? preferred.direct_url
+                : (imageMedia[0]?.direct_url || "");
 
-            const preferredImage =
-                imageMedia.find(
-                    item => item.preferred
-                );
-
-            if (preferredImage) {
-
-                imageUrl =
-                    preferredImage.direct_url;
-
-            } else if (imageMedia.length > 0) {
-
-                imageUrl =
-                    imageMedia[0].direct_url;
-            }
-
-            // Display team info
-
+            // Team info
             results.innerHTML = `
                 <h3>${team.nickname}</h3>
-
-                <p>
-                    Team ${team.team_number}
-                </p>
-
-                <p>
-                    Rookie Year:
-                    ${team.rookie_year ?? "Unknown"}
-                </p>
-
-                <p>
-                    ${team.city ?? ""}
-                    ${team.state_prov
-                        ? ", " + team.state_prov
-                        : ""}
-                </p>
+                <p>Team ${team.team_number}</p>
+                <p>Rookie Year: ${team.rookie_year ?? "Unknown"}</p>
+                <p>${team.city ?? ""}${team.state_prov ? ", " + team.state_prov : ""}</p>
             `;
 
             if (imageUrl) {
-
                 results.innerHTML += `
-                    <img
-                        src="${imageUrl}"
-                        alt="Robot Picture"
-                        style="
-                            max-width:100%;
-                            margin-top:10px;
-                            border-radius:8px;
-                        "
-                    >
-                `;
-
-            } else {
-
-                results.innerHTML += `
-                    <p>No image available.</p>
+                    <img src="${imageUrl}" style="max-width:100%;margin-top:10px;border-radius:8px;">
                 `;
             }
 
-            matchResults.innerHTML = "";
+            // =========================
+            // FIXED EPA + WORLD RANK
+            // =========================
 
+            const epaData = epa?.epa ?? {};
+
+            const meanEPA =
+                epaData?.total_points?.mean ?? "N/A";
+
+            const sdEPA =
+                epaData?.total_points?.sd ?? "N/A";
+
+            const worldRank =
+                epaData?.ranks?.total?.rank ?? "N/A";
+
+            results.innerHTML += `
+                <h3>EPA Statistics</h3>
+                <p>EPA: ${meanEPA} ± ${sdEPA}</p>
+                <p>World Rank: ${worldRank}</p>
+            `;
+
+            matchResults.innerHTML = "";
             status.textContent = "Done";
 
         } catch (err) {
-
             console.error(err);
-
             results.innerHTML = "";
             matchResults.innerHTML = "";
-
-            status.textContent =
-                "Team not found";
+            status.textContent = "Team not found";
         }
-
     });
-
 }
