@@ -137,7 +137,8 @@ export function setupTeamSearch() {
 
                         <br>
 
-                        Score: ${score}
+                        Score: 
+                        ${redScore} - ${blueScore}
 
                         <br>
 
