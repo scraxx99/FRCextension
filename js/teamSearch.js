@@ -68,11 +68,27 @@ export function setupTeamSearch() {
                     )
                         ? "Red"
                         : "Blue";
+                const redScore = match.alliances.red.score;
+                const blueScore = match.alliances.blue.score;
 
                 const score =
-                    alliance === "Red"
-                        ? match.alliances.red.score
-                        : match.alliances.blue.score;
+                alliance === "Red"
+                ? redScore
+                : blueScore;
+
+                let result = "Tie";
+
+                if (
+                    (alliance === "Red" && redScore > blueScore) ||
+                    (alliance === "Blue" && blueScore > redScore)
+                ) {                 
+                result = "✅ Win";
+                } else if (
+                (alliance === "Red" && redScore < blueScore) ||
+                (alliance === "Blue" && blueScore < redScore)
+                ) {
+                result = "❌ Loss";
+                }
 
                 let videoHtml =
                     "<p>No video available.</p>";
@@ -122,6 +138,10 @@ export function setupTeamSearch() {
                         <br>
 
                         Score: ${score}
+
+                        <br>
+
+                        Result: ${result}
 
                         <br>
 
