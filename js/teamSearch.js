@@ -18,14 +18,14 @@ export function setupTeamSearch() {
 
     let currentTeamNumber = null;
 
-    // Enter key triggers search
+    // Enter key support
     input.addEventListener("keydown", (event) => {
         if (event.key === "Enter") {
             button.click();
         }
     });
 
-    // Event matches
+    // EVENT MATCHES
     eventDropdown.addEventListener("change", async () => {
 
         if (!currentTeamNumber) return;
@@ -62,21 +62,25 @@ export function setupTeamSearch() {
                 const redScore = match.alliances.red.score;
                 const blueScore = match.alliances.blue.score;
 
-                const scoreText = `${redScore} - ${blueScore}`;
-
                 let result = "Tie";
 
                 if (
                     (onRed && redScore > blueScore) ||
                     (!onRed && blueScore > redScore)
                 ) {
-                    result = "✅ Win";
+                    result = "Win";
                 } else if (
                     (onRed && redScore < blueScore) ||
                     (!onRed && blueScore < redScore)
                 ) {
-                    result = "❌ Loss";
+                    result = "Loss";
                 }
+
+                // ✅ JS CHANGE 4 — card styling
+                const cardClass =
+                    result === "Win" ? "match-card win"
+                    : result === "Loss" ? "match-card loss"
+                    : "match-card";
 
                 let videoHtml = "<p>No video available.</p>";
 
@@ -96,10 +100,10 @@ export function setupTeamSearch() {
                 }
 
                 matchResults.innerHTML += `
-                    <div style="margin-bottom:12px;padding:10px;border:1px solid #ccc;border-radius:8px;">
+                    <div class="${cardClass}">
                         <strong>${match.comp_level.toUpperCase()} ${match.match_number}</strong><br>
                         Result: ${result}<br>
-                        Score: ${scoreText}<br>
+                        Score: ${redScore} - ${blueScore}<br>
                         ${videoHtml}
                     </div>
                 `;
@@ -111,7 +115,7 @@ export function setupTeamSearch() {
         }
     });
 
-    // Main search
+    // MAIN SEARCH
     button.addEventListener("click", async () => {
 
         const teamNumber = input.value.trim();
@@ -135,7 +139,7 @@ export function setupTeamSearch() {
 
             console.log("Statbotics RAW:", epa);
 
-            // Events dropdown
+            // EVENTS DROPDOWN
             eventDropdown.innerHTML = `<option value="">Select Event...</option>`;
 
             events.forEach(event => {
@@ -145,7 +149,7 @@ export function setupTeamSearch() {
                 eventDropdown.appendChild(option);
             });
 
-            // Robot image
+            // ROBOT IMAGE
             const imageMedia = robotPic.filter(item =>
                 item.direct_url &&
                 (
@@ -161,12 +165,13 @@ export function setupTeamSearch() {
                 ? preferred.direct_url
                 : (imageMedia[0]?.direct_url || "");
 
-            // Team info
+            // TEAM CARD
             results.innerHTML = `
-                <h3>${team.nickname}</h3>
-                <p>Team ${team.team_number}</p>
-                <p>Rookie Year: ${team.rookie_year ?? "Unknown"}</p>
-                <p>${team.city ?? ""}${team.state_prov ? ", " + team.state_prov : ""}</p>
+                <div class="team-card">
+                    <h2>${team.nickname}</h2>
+                    <p>Team ${team.team_number}</p>
+                    <p>${team.city ?? ""}${team.state_prov ? ", " + team.state_prov : ""}</p>
+                </div>
             `;
 
             if (imageUrl) {
@@ -176,24 +181,22 @@ export function setupTeamSearch() {
             }
 
             // =========================
-            // FIXED EPA + WORLD RANK
+            // EPA + WORLD RANK FIXED
             // =========================
 
             const epaData = epa?.epa ?? {};
 
-            const meanEPA =
-                epaData?.total_points?.mean ?? "N/A";
+            const meanEPA = epaData?.total_points?.mean ?? "N/A";
+            const sdEPA = epaData?.total_points?.sd ?? "N/A";
 
-            const sdEPA =
-                epaData?.total_points?.sd ?? "N/A";
-
-            const worldRank =
-                epaData?.ranks?.total?.rank ?? "N/A";
+            const worldRank = epaData?.ranks?.total?.rank ?? "N/A";
 
             results.innerHTML += `
-                <h3>EPA Statistics</h3>
-                <p>EPA: ${meanEPA} ± ${sdEPA}</p>
-                <p>World Rank: ${worldRank}</p>
+                <div class="team-card">
+                    <h3>EPA Statistics</h3>
+                    <span class="epa-badge">EPA: ${meanEPA} ± ${sdEPA}</span>
+                    <span class="epa-badge">World Rank: ${worldRank}</span>
+                </div>
             `;
 
             matchResults.innerHTML = "";
