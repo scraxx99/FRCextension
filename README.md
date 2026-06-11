@@ -2,7 +2,8 @@
 
 A scouting dashboard for FIRST Robotics Competition teams that combines team information, robot media, match history, EPA analytics, and team comparison tools in a single interface.
 
-![ScoutBuddy Screenshot](Screenshot%20from%202026-06-11%2014-33-37.png)
+<img width="1366" height="768" alt="Screenshot from 2026-06-11 14-33-37" src="https://github.com/user-attachments/assets/65c388a2-53b7-492f-9331-6defb1725bcc" />
+
 
 ## 🚀 Try It
 
